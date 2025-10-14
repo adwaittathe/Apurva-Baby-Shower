@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="reveal_codes.js"></script>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baby Loading Animation</title>
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+
+
+<style>
+body {
+    font-family: 'Fredoka One', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #fce4ec, #e3f2fd);
+    background-image: url('resources/loading_page_background.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+
+.text {
+    font-family: "Gloria Hallelujah", cursive;
+    font-size: 52px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #ffffff; 
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.25), 0 0 15px rgba(129,212,250,0.5);
+    animation: pulseText 1.5s infinite alternate;
+}
+
+/* Subtle pulsing animation */
+@keyframes pulseText {
+    0% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.08); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.9; }
+}
+
+.timer {
+	font-family: "Gloria Hallelujah", cursive;
+    font-size: 53px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+}
+
+.loading-container {
+    position: relative;
+    width: 400px;
+    height: 60px;
+    border: 3px solid #333;
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    overflow: visible;
+}
+
+.progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #f48fb1, #81d4fa);
+    border-radius: 30px;
+    transition: width 0.2s linear;
+    animation: pulseProgress 1.5s infinite;
+}
+
+@keyframes pulseProgress {
+    0% {opacity: 0.8;}
+    50% {opacity: 1;}
+    100% {opacity: 0.8;}
+}
+
+.feet {
+    position: absolute;
+    top: -15px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: left 0.1s linear;
+}
+
+.feet img {
+    height: 90px;
+}
+</style>
+</head>
+<body>
+<div class="text">New Life Loading...</div>
+<div class="timer" id="timer">15</div>
+<div class="loading-container">
+    <div class="progress" id="progress"></div>
+    <div class="feet" id="feet">
+        <img src="resources/feet.png" alt="baby foot">
+    </div>
+</div>
+
+<script>
+const feet = document.getElementById('feet');
+const progress = document.getElementById('progress');
+const timerDisplay = document.getElementById('timer');
+const duration = 20000; // 20 seconds
+const containerWidth = 400;
+let start = null;
+
+function animate(timestamp) {
+    if (!start) start = timestamp;
+    const elapsed = timestamp - start;
+    const progressPercent = Math.min(elapsed / duration, 1);
+    
+    // Feet position
+    const leftPos = progressPercent * (containerWidth + 50 - feet.offsetWidth / 2);
+    feet.style.left = leftPos + 'px';
+    
+    // Progress bar width
+    progress.style.width = (progressPercent * 100) + '%';
+    
+    // Countdown timer
+    const timeLeft = Math.ceil((duration - elapsed) / 1000);
+    timerDisplay.textContent = timeLeft > 0 ? timeLeft : 0;
+    
+    if (progressPercent < 1) {
+        requestAnimationFrame(animate);
+    } else {
+        const params = new URLSearchParams(window.location.search);
+        const normCode = params.get('code');
+        const result = window.REVEAL_CODES[normCode];
+
+        if (result === 'boy') {
+            window.location.href = 'boy.html';
+        } else if (result === 'girl') {
+            window.location.href = 'girl.html';
+        } else {
+            alert('Invalid code!');
+            window.location.href = 'apurva_and_ishaan.html';
+        }
+    }
+}
+
+requestAnimationFrame(animate);
+</script>
+</body>
+</html>

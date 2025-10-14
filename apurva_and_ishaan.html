@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<script src="reveal_codes.js"></script>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Gender Reveal — Code Decoder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--accent:#7dd3fc;--muted:#f3f4f6}
+    html,body{height:100%;margin:0;font-family:'Inter',sans-serif;}
+    body{display:flex;justify-content:center;align-items:center;
+          background:url('resources/main_page_background.jpeg') no-repeat center center/cover;
+          color:#fff;position:relative;}
+    .overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);}
+    .card{position:relative;z-index:1;width:min(600px,90vw);background:rgba(255,255,255,0.05);border-radius:20px;padding:40px;box-shadow:0 10px 40px rgba(0,0,0,0.6);text-align:center;}
+    h1{margin-bottom:10px;font-size:28px;color:#fefefe;}
+    p.lead{margin-bottom:30px;color:#d1d5db;}
+
+    input[type=text]{width:70%;padding:14px 18px;border-radius:12px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#fff;font-size:16px;outline:none;}
+    input[type=text]::placeholder{color:#e0e0e0;}
+
+    .btn-group{display:flex;justify-content:center;margin-left:0;margin-top:10px;gap:10px;}
+    button{padding:14px 20px;border-radius:12px;border:none;background:var(--accent);color:#052233;font-weight:600;cursor:pointer;transition:transform 0.2s;}
+    button:hover{transform:scale(1.05);}
+    button.secondary{background:transparent;color:var(--accent);border:1px solid rgba(125,211,252,0.5);}
+
+    .result{margin-top:25px;min-height:50px;font-size:16px;}
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <main class="card">
+    <h1>💙 Gender Reveal 💖</h1>
+    <p class="lead">Enter your secret code below to find out if it's a boy or a girl!</p>
+    <div>
+      <input id="codeInput" type="text" placeholder="Enter reveal code" autocomplete="off" />
+    </div>
+    <div class="btn-group">
+      <button id="revealBtn">Reveal</button>
+      <button id="clearBtn" class="secondary">Clear</button>
+    </div>
+    <div class="result" id="resultArea"></div>
+  </main>
+
+  <script type="module">
+    function normalize(s){ return String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,''); }
+    const normalizedMap = {};
+    for(const k in window.REVEAL_CODES) normalizedMap[normalize(k)] = REVEAL_CODES[k];
+
+    const codeInput = document.getElementById('codeInput');
+    const revealBtn = document.getElementById('revealBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const resultArea = document.getElementById('resultArea');
+
+    function showMessage(msg, color='#fefefe'){
+      resultArea.innerHTML = `<span style='color:${color}; font-weight:600;'>${msg}</span>`;
+    }
+
+    function confettiAnimation(){
+      for(let i=0;i<25;i++){
+        const dot = document.createElement('div');
+        dot.style.position='fixed';
+        dot.style.width='8px'; dot.style.height='8px';
+        dot.style.background=`hsl(${Math.random()*360}, 70%, 60%)`;
+        dot.style.left=Math.random()*100+'vw';
+        dot.style.top='-10px';
+        dot.style.borderRadius='50%';
+        dot.style.opacity=1;
+        dot.style.zIndex=999;
+        document.body.appendChild(dot);
+        const fall = dot.animate([{transform:'translateY(0px)'},{transform:'translateY(100vh)'}],{duration:1500+Math.random()*1000,easing:'cubic-bezier(.2,.8,.2,1)'});
+        fall.onfinish=()=>dot.remove();
+      }
+    }
+
+    revealBtn.addEventListener('click', ()=>{
+      const raw = codeInput.value.trim();
+      if(!raw){ showMessage('Please enter a code.'); return; }
+      const norm = normalize(raw);
+      const found = normalizedMap[norm];
+      if(found){
+        confettiAnimation();
+        setTimeout(()=>{
+          // Pass the entered code as query string
+          window.location.href = `dhak_dhak.html?code=${encodeURIComponent(raw)}`;
+        }, 1200);
+      } else showMessage(`Code '${raw}' is incorrect.`, '#fca5a5');
+    });
+
+    clearBtn.addEventListener('click', ()=>{ codeInput.value=''; resultArea.innerHTML=''; });
+    codeInput.addEventListener('keydown', ev=>{if(ev.key==='Enter') revealBtn.click();});
+  </script>
+</body>
+</html>
