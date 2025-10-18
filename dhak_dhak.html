@@ -108,6 +108,9 @@ body {
 </div>
 
 <script>
+function normalize(s){ 
+    return String(s).toUpperCase(); 
+}
 const feet = document.getElementById('feet');
 const progress = document.getElementById('progress');
 const timerDisplay = document.getElementById('timer');
@@ -135,12 +138,17 @@ function animate(timestamp) {
         requestAnimationFrame(animate);
     } else {
         const params = new URLSearchParams(window.location.search);
-        const normCode = params.get('code');
-        const result = window.REVEAL_CODES[normCode];
+        const normalizedMap = {};
+        const raw = params.get('code').trim();
+        const norm = normalize(raw);
+        for(const k in window.REVEAL_CODES) normalizedMap[normalize(k)] = REVEAL_CODES[k];
+        // const normCode = 
+        const found = normalizedMap[norm];
+        console.log(found)
 
-        if (result === 'boy') {
+        if (found === 'boy') {
             window.location.href = 'boy.html';
-        } else if (result === 'girl') {
+        } else if (found === 'girl') {
             window.location.href = 'girl.html';
         } else {
             alert('Invalid code!');
