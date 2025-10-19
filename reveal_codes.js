@@ -1,4 +1,4 @@
 window.REVEAL_CODES = {
-  'IA4C6EBA': 'boy',
-  'IECBDC4A': 'girl'
+  'BE6C4A': 'boy',
+  '8BE98E': 'girl'
 };
